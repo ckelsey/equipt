@@ -1,0 +1,9 @@
+@import 'vars.scss';
+
+:host(progress-bar) {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.danger {
+    color: $danger;
+}

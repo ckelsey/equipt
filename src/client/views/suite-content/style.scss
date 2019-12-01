@@ -1,0 +1,61 @@
+@import '../../styles/vars.scss';
+
+.suite-content-name-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+}
+
+.suite-content-name {
+    &[state="failed"] {
+        @include failed;
+    }
+
+    &[state="skipped"] {
+        @include skipped;
+    }
+}
+
+.suite-content-skips {
+    color: $offset;
+    opacity: 0.62;
+}
+
+.suite-content-fails {
+    color: $danger;
+}
+
+.suite-content-passes {
+    color: $primary;
+}
+
+.suite-content-tests {
+    padding-bottom: 0.5em;
+}
+
+.suite-content-test-result {
+    margin: 0.25em;
+    padding: 0.5em;
+    width: calc(100% - 0.25em);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 0.25em;
+    font-weight: 100;
+
+    .failed {
+        @include failed;
+    }
+
+    .skipped {
+        @include skipped;
+    }
+
+    /*
+    &.odd {
+        background: $baseLight;
+    }
+    */
+}

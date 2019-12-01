@@ -1,0 +1,62 @@
+@import './vars.scss';
+
+.button-element:not(foo) {
+    button {
+        background: $primary;
+        color: #fff;
+        border-radius: 4px;
+        box-shadow: none;
+        text-transform: uppercase;
+
+        &:hover {
+            background: darken($primary, 0.1);
+            color: #fff;
+            box-shadow: none;
+        }
+    }
+
+    &.warning {
+        button {
+            background: $warning;
+
+            &:hover {
+                background: darken($warning, 0.1);
+            }
+        }
+    }
+
+    &.danger {
+        button {
+            background: $danger;
+
+            &:hover {
+                background: darken($danger, 0.1);
+            }
+        }
+    }
+
+    &.slim {
+        button {
+            padding: 0.5em;
+        }
+    }
+
+    &.circle {
+        border-radius: 50%;
+
+        button {
+            border-radius: 50%;
+        }
+    }
+
+    &.w-100 {
+        button {
+            width: 100%;
+            ;
+        }
+    }
+}
+
+button-element.circle {
+    border-radius: 50%;
+}

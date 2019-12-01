@@ -1,0 +1,28 @@
+@import '../../styles/vars.scss';
+
+.result-header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    position: relative;
+    left: -0.5em;
+    padding: 1em 0;
+    cursor: pointer;
+
+    &>* {
+        margin: 0 0.5em;
+    }
+
+    .skipped {
+        opacity: 0.62;
+    }
+
+    .passed {
+        color: $primary;
+    }
+
+    .failed {
+        color: $danger;
+    }
+}

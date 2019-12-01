@@ -1,0 +1,22 @@
+.project-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.run-project {
+    margin-right: 0.5em;
+
+    &.hide {
+        pointer-events: none;
+        margin-right: 0;
+        opacity: 0;
+        width: 0;
+        overflow: hidden;
+    }
+}

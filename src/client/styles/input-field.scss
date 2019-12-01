@@ -1,0 +1,10 @@
+.flex input-field {
+    width: auto;
+    max-width: 300px;
+}
+
+.input-field-container:not(foo) {
+    .input-field-border {
+        opacity: 0.25;
+    }
+}

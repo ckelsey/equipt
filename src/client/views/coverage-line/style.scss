@@ -1,0 +1,40 @@
+@import '../../styles/vars.scss';
+
+$numWidth: 2.76em;
+
+.coverage-line-container {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    width: 100%;
+
+    &>* {
+        padding: 0.25em;
+        box-sizing: border-box;
+    }
+
+    .coverage-line-count,
+    .coverage-line-number {
+        width: $numWidth;
+        min-width: $numWidth;
+        max-width: $numWidth;
+    }
+
+    .coverage-line-count {
+        color: $primary;
+    }
+
+    .coverage-line-count.no-coverage {
+        color: $warning;
+    }
+
+    .coverage-line-number {
+        background: $baseLight;
+    }
+
+    .coverage-line-content-container {
+        pre {
+            margin: 0;
+        }
+    }
+}

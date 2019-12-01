@@ -21,13 +21,15 @@ module.exports = project => new Promise((resolve, reject) => {
     const finish = () => {
         if (testsDone !== testsLength || !coverage) { return }
 
+        const time = new Date().getTime()
+
         Object.keys(testsdata)
             .sort()
             .forEach(testFilepath => tests.push(testsdata[testFilepath]))
 
-        const results = { tests, coverage }
+        const results = { tests, coverage, time }
 
-        fs.writeFileSync(path.join(resultsPath, `results-${new Date().getTime()}.json`), JSON.stringify(results))
+        fs.writeFileSync(path.join(resultsPath, `results-${time}.json`), JSON.stringify(results))
         execSync(`rm -R ${output}`)
 
         return resolve(results)
@@ -47,6 +49,10 @@ module.exports = project => new Promise((resolve, reject) => {
             .sort()
 
         testsLength = files.length
+
+        if (!files.length) {
+            return finish()
+        }
 
         files.forEach(file => {
             const filePath = path.join(output, file)

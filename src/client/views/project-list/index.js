@@ -1,11 +1,19 @@
 import '../project-link'
-import { WCConstructor, WCDefine, CreateElement } from 'builtjs'
+import { WCConstructor, WCDefine, CreateElement, ObserverUnsubscribe } from 'builtjs'
 import Projects from '../../services/projects'
 
 const populate = (root, projects) => {
     root.innerHTML = ``
 
-    Object.keys(projects).forEach(key =>
+    const keys = Object.keys(projects)
+
+    keys.sort((a, b) => {
+        const aName = projects[a].name.toLowerCase()
+        const bName = projects[b].name.toLowerCase()
+        return aName < bName ? -1 : aName > bName ? 1 : 0
+    })
+
+    keys.forEach(key =>
         root.appendChild(
             CreateElement({
                 tagName: `project-link`,
@@ -25,11 +33,10 @@ export const ProjectList = WCConstructor({
     componentRoot,
     template,
     elements,
+    onDisconnected: ObserverUnsubscribe,
     onConnected(host) {
         host.subscriptions = {
-            projects: Projects.projects$.subscribe(projects => {
-                populate(host.elements.root, projects)
-            })
+            projects: Projects.projects$.subscribe(projects => populate(host.elements.root, projects))
         }
 
         Projects.getProjects()

@@ -9,9 +9,29 @@
         text-transform: uppercase;
 
         &:hover {
-            background: darken($primary, 0.1);
+            background: saturate(lighten($primary, 10%), 10%);
             color: #fff;
             box-shadow: none;
+        }
+    }
+
+    &.dim-background {
+        button {
+            background: $dimDarker;
+
+            &:hover {
+                background: $dimDark;
+            }
+        }
+    }
+
+    &.primary-color {
+        button {
+            color: darken($primary, 0.1);
+
+            &:hover {
+                color: $primary;
+            }
         }
     }
 
@@ -21,6 +41,16 @@
 
             &:hover {
                 background: darken($warning, 0.1);
+            }
+        }
+    }
+
+    &.warning-color {
+        button {
+            color: darken($warning, 0.1);
+
+            &:hover {
+                color: $warning;
             }
         }
     }

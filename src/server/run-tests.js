@@ -1,4 +1,3 @@
-const electron = require(`electron`)
 const path = require(`path`)
 const spawn = require(`child_process`).spawn
 const GetProjectRoot = require(`./get-project-root`)
@@ -7,14 +6,17 @@ const Between = require(`../utils/between`)
 const CanWriteFiles = require(`./can-write-files`)
 const WriteRemoteFiles = require(`./write-remote-files`)
 const GatherTestResults = require(`./gather-test-results`)
+const State = require(`./state`)
 
 module.exports = project => new Promise((resolve, reject) => {
-    const window = electron.BrowserWindow.getFocusedWindow()
-    window.webContents.send(`testProgress`, { progress: 0, done: false, text: `Preparing tests`, header: `Initializing` })
+    let errored = false
+    State.window.webContents.send(`testProgress`, { progress: 0, done: false, text: `Preparing tests`, header: `Initializing` })
 
     if (!CanWriteFiles(project)) {
-        window.webContents.send(`testProgress`, { done: true })
-        return reject(`Invalid package.json path`)
+        const error = `Invalid package.json path`
+        State.window.webContents.send(`testProgress`, { done: true })
+        State.window.webContents.send(`appError`, { error })
+        return reject(error)
     }
 
     const root = GetProjectRoot(project)
@@ -23,7 +25,7 @@ module.exports = project => new Promise((resolve, reject) => {
     const targetNodeModules = path.join(root, `node_modules`)
     const configPath = WDConfig(project, true)
     const out = path.join(path.dirname(configPath), `output`)
-    const needsBabel = project.babelConfig !== false
+    const needsBabel = project.requiresBabel
     let numberOfTests = 0
     let numberOfCompleted = 0
     let failedTests = 0
@@ -37,19 +39,28 @@ module.exports = project => new Promise((resolve, reject) => {
     const updateTestCount = string => numberOfTests = parseInt(Between(`Execution of `, ` spec files`, string).first())
     const incrementCompleted = () => numberOfCompleted = numberOfCompleted + 1
     const incrementFailed = () => failedTests = failedTests + 1
-    const standardText = (string, type) => `${progressText()}${type} ${testFile(string)}`
-    const sendUpdate = (done, header, text) => window.webContents.send(`testProgress`, { done, text, progress: progress(), header: `${browser}${header}` })
+    const standardText = (string, type) => `${progressText()}${type} ${testFile(string) || ``}`
+    const sendUpdate = (done, header, text) => errored ? undefined : State.window.webContents.send(`testProgress`, { done, text, progress: progress(), header: `${browser}${header}` })
 
     const onComplete = () => {
+        if (errored) { return }
         sendUpdate(true, `Complete`, `Gathering reports`)
         GatherTestResults(project)
             .then(res => {
                 sendUpdate(true, `Complete`, `Done`)
                 resolve(
-                    window.webContents.send(`testResults`, res)
+                    State.window.webContents.send(`testResults`, res)
                 )
             })
+    }
 
+    const onError = error => {
+        errored = true
+        child.stdin.pause()
+        child.kill()
+        State.window.webContents.send(`testProgress`, { done: true, text: ``, progress: 0, header: `` })
+        State.window.webContents.send(`appError`, { error })
+        return reject(error)
     }
 
     const args = [
@@ -67,15 +78,30 @@ module.exports = project => new Promise((resolve, reject) => {
     }
 
     args.push(path.resolve(`${targetNodeModules}/.bin/wdio`))
+    args.push(`run`)
     args.push(configPath)
 
     const child = spawn(path.resolve(`${targetNodeModules}/.bin/nyc`), args)
+
     child.on(`exit`, onComplete)
-    child.on(`error`, onComplete)
-    child.stderr.on(`data`, onComplete)
+
+    child.on(`error`, err => {
+        return onError(err.toString())
+    })
+
+    child.stderr.on(`data`, err => {
+        return onError(err.toString())
+    })
+
     child.stdout.on(`data`, (data) => {
         console.log(`stdout: ${data}`)
         const string = data.toString().trim()
+        const errorIndex = string.indexOf(` Error: `)
+
+        /** TODO - this kind of parsing sucks */
+        if (errorIndex > -1 && errorIndex < 20) {
+            return onError(string)
+        }
 
         if (string.indexOf(`Execution of `) === 0) {
             updateTestCount(string)

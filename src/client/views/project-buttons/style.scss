@@ -1,3 +1,10 @@
-button-element.hide {
-    display: none;
+@import '../../styles/vars.scss';
+
+.project-buttons-container {
+    @include spaceBetween(relative, 0.25em);
+
+    button-element.hide {
+        opacity: 0;
+        pointer-events: none;
+    }
 }

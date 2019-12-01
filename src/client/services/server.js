@@ -25,5 +25,7 @@ const Server = {
 ipcRenderer.on(`testResults`, (_event, data) => Server.trigger(`testResults`, data))
 ipcRenderer.on(`savingProjectProgress`, (_event, data) => Server.trigger(`savingProjectProgress`, data))
 ipcRenderer.on(`testProgress`, (_event, data) => Server.trigger(`testProgress`, data))
+ipcRenderer.on(`appError`, (_event, data) => Server.trigger(`appError`, data))
+ipcRenderer.on(`projectsUpdate`, (_event, data) => Server.trigger(`projectsUpdate`, data))
 
 export default Server

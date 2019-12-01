@@ -4,13 +4,28 @@ $danger:#de084b;
 $offset:#e4e4e4;
 $base:#202427;
 $baseLight: saturate(lighten($base, 3.33%), 3.33%);
+$baseDark: saturate(darken($base, 3.33%), 3.33%);
+$dim: transparentize($offset, 0.38);
+$dimDark: transparentize($offset, 0.62);
+$dimDarker: transparentize($offset, 0.88);
 
 @mixin failed {
     color: $danger;
 }
 
 @mixin skipped {
-    color: transparentize($offset, 0.38);
+    color: $dim;
+}
+
+@mixin spaceBetween($position:relative, $amount:0.5em, $width:100%) {
+    position: $position;
+    left: -$amount;
+    width: calc($width + $amount);
+
+    &>* {
+        margin-left: $amount;
+        margin-right: $amount;
+    }
 }
 
 :export {
@@ -35,6 +50,7 @@ $baseLight: saturate(lighten($base, 3.33%), 3.33%);
 }
 
 .result-coverage-score {
+    min-width: 2.5em;
     width: 2.5em;
     height: 2.5em;
     display: flex;

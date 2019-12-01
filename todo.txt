@@ -1,24 +1,19 @@
-- UI
-    - delete btn to go under edit
-    - edit btn to be circle icon with gear
-    - hover on collapse toggle
-    - replace collapsible bottom border with actual border
-    - sidebar width to max on links/btn width
-
 
 
 =================================================
 LATER ENHANCMENTS
 =================================================
 
-- Handle more complicated globs for test specs
+- get rid of flicker from when settings is open and change project
+
+- view logs(for unuseful errors)
 
 - project init
     - in remote package, add install(npm i actually installs into equipt directory) and start scripts so you can run without the app
     - create jasmine config?
 
 - run project
-    - progress bar w/ cancel
+    - cancel tests runner (child.pause();child.kill())
 
 - visual recorder test maker?
     - start server
@@ -28,28 +23,3 @@ LATER ENHANCMENTS
 - Would be so cool if it could also help write docs
 
 - delete test result
-
-
-
-=================================================
-TEMP STORAGE
-=================================================
-,
-    "nyc": {
-        "require": [
-            "@babel/register"
-        ],
-        "reporter": [
-            "lcov",
-            "text"
-        ],
-        "sourceMap": false,
-        "instrument": false
-    }
-
-
-
-    protocol: '{{protocol}}',
-    hostname: '{{hostname}}',
-    port: '{{port}}',
-    path: '{{path}}',

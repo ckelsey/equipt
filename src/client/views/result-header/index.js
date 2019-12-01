@@ -6,7 +6,7 @@ const template = require(`./index.html`)
 const style = require(`./style.scss`).toString()
 
 const setDate = (val, el) => {
-    const date = DateToObject(Get(val, `tests.0.start`)).value
+    const date = DateToObject(new Date(Get(val, `time`))).value
     el.innerHTML = `<span>${date.hourDouble}:${date.minutesDouble}&nbsp;${date.ampm}&nbsp;&middot;&nbsp;${date.monthNameShort}&nbsp;${date.day}</span>`
 }
 
@@ -24,11 +24,13 @@ const setPassFailSkip = (val, el) => {
     el.innerHTML = `<span><span class="skipped">${skipped} skipped</span>&nbsp;&middot;&nbsp;<span class="failed">${failed} failed</span>&nbsp;&middot;&nbsp;<span class="passed">${passed} passed</span></span>`
 }
 
+const actualPercent = pct => !pct || pct === `Unknown` ? 0 : pct
+
 const setCoverageScore = (val, el) => {
     const totals = Get(val, `coverage.total`, {})
     const sum = Object.keys(totals)
         .reduce((result, key) => {
-            result = result + totals[key].pct
+            result = result + actualPercent(totals[key].pct)
             return result
         }, 0)
 

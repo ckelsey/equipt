@@ -1,9 +1,11 @@
-import { WCConstructor, WCDefine, ObserveEvent } from 'builtjs'
+import { WCConstructor, WCDefine, ObserveEvent, ObserverUnsubscribe, CreateElement, ValidateHtml } from 'builtjs'
 import '../project-list'
 import '../project-header'
 import '../project-results'
 import '../project-settings'
+import '../no-project'
 import Projects from '../../services/projects'
+import { Messages } from '../../services/messages'
 
 const componentName = `app-content`
 const componentRoot = `.${componentName}-container`
@@ -17,7 +19,9 @@ const elements = {
                 click: ObserveEvent(el, `click`).subscribe(() => Projects.newProject())
             }
         }
-    }
+    },
+    overlayMessages: { selector: `#app-messages` },
+    spinner: { selector: `#app-spinner` }
 }
 
 export const AppContent = WCConstructor({
@@ -26,6 +30,37 @@ export const AppContent = WCConstructor({
     template,
     style,
     elements,
+    onConnected(host) {
+        const messageSlots = [`header`, `body`, `button`]
+
+        host.eventSubscriptions = {
+            messages: Messages.messages$.subscribe(messages => {
+                const message = messages[0]
+                const overlayMessages = host.elements.overlayMessages
+                overlayMessages.innerHTML = ``
+
+                if (!message) { return overlayMessages.shown = false }
+
+                messageSlots.forEach(slot => {
+                    overlayMessages.appendChild(
+                        CreateElement({
+                            tagName: `div`,
+                            innerHTML: ValidateHtml(messages[0][slot], [], [`script`]).sanitized,
+                            slot
+                        })
+                    )
+                })
+
+                overlayMessages.shown = true
+
+            }),
+
+            loadingProjects: Projects.loading$.subscribe(loading => host.elements.spinner.visible = loading)
+        }
+    },
+    onDisconnected(host) {
+        ObserverUnsubscribe(host)
+    }
 })
 
 WCDefine(componentName, AppContent)

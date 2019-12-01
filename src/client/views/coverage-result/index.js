@@ -16,8 +16,6 @@ const properties = {
     coverage: {
         format: val => val,
         onChange: (val, host) => {
-            console.log(val)
-
             const average = Coverage.average(val)
             const toggler = host.elements.toggler
             const content = host.elements.content

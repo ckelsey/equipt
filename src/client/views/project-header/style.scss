@@ -1,7 +1,14 @@
+@import '../../styles/vars.scss';
+
 .project-header-bar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    @include spaceBetween(relative, 0.75em);
+}
+
+.project-header-text {
+    margin: 0;
+    padding-top: 0.25em;
 }
 
 .header-right {

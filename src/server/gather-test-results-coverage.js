@@ -41,6 +41,10 @@ module.exports = root => new Promise((resolve, reject) => {
         const codesLength = codePaths.length
         let codesGotten = 0
 
+        if (codesLength === 0) {
+            return finish()
+        }
+
         codePaths.forEach(codePath => {
             const fileCoverage = fileContent[codePath]
 

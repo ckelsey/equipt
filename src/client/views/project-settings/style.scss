@@ -1,2 +1,10 @@
 @import '../../styles/vars.scss';
 @import '../../styles/input-field.scss';
+
+.project-settings-container {
+    &.new-project {
+        .project-settings-delete {
+            display: none;
+        }
+    }
+}

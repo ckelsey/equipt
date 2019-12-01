@@ -1,0 +1,16 @@
+@import './vars.scss';
+
+.content-collapse-container {
+    &.toggler-hover-dim {
+        .content-collapse-toggler {
+            border-radius: 0.25em;
+            background-color: transparent;
+            padding: 0.5em;
+            transition: background-color 0.33s ease-in-out;
+
+            &.hovering {
+                background-color: $baseLight;
+            }
+        }
+    }
+}

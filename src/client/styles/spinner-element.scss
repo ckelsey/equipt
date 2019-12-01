@@ -1,0 +1,11 @@
+@import './vars.scss';
+
+.spinner-element-container:not(.meh) {
+    .spinner-element-scrim {
+        background: transparentize($baseLight, 0.38);
+    }
+
+    .spinner-element-inner {
+        color: $warning;
+    }
+}

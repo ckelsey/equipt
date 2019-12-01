@@ -7,7 +7,7 @@ module.exports = (project, getPath, getDependencies) => {
     if (getDependencies) { return Object.keys(dependencies) }
     if (getPath) { return path.join(GetProjectRoot(project), `package.json`) }
 
-    const needsBabel = project.babelConfig !== false
+    const needsBabel = project.requiresBabel
 
     return {
         name: `${project.name}_equipt`,

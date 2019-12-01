@@ -4,6 +4,10 @@ const fs = require(`fs`)
 module.exports = (root, read, sync) => {
     const resultsPath = path.join(root, `results`)
 
+    if (!fs.existsSync(root)) {
+        fs.mkdirSync(root)
+    }
+
     if (!fs.existsSync(resultsPath)) {
         fs.mkdirSync(resultsPath)
     }

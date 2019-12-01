@@ -5,29 +5,24 @@
             <div class="input">
                 <input-field label="Name" class="project-settings-name"></input-field>
             </div>
+
             <div class="input">
                 <input-field label="Package.json" type="file" class="project-settings-package"></input-field>
             </div>
-            <div class="input">
-                <input-field label="Entry" type="file" class="project-settings-entry"></input-field>
-            </div>
+
+
             <div class="input">
                 <input-field label="Tests path pattern" type="text" class="project-settings-tests-path"></input-field>
             </div>
 
             <div class="input">
-                <input-field label="Requires Babel?" type="checkbox" labelposition="right" class="project-settings-require-babel" style="margin:-0.75em 0 -1.25em;"></input-field>
+                <input-field label="Requires Babel?" type="checkbox" labelposition="right" class="project-settings-requires-babel" style="margin:-0.75em 0 -1.25em;"></input-field>
             </div>
 
-            <div class="input">
-                <content-transition keepchildren="true" class="project-settings-babel-transition">
-                    <div slot="hidden"></div>
-                    <input-field label="Babel config (optional)" type="file" class="project-settings-babel-config" slot="hidden"></input-field>
-                </content-transition>
-            </div>
 
             <div class="input" style="padding-bottom: 2em;">
                 <button-element class="project-settings-submit">Save</button-element>
+                <button-element class="project-settings-delete danger">Delete</button-element>
             </div>
         </div>
     </content-transition>

@@ -1,9 +1,9 @@
-const appPath = require(`electron`).app.getAppPath()
-const path = require(`path`)
-const GetProjectRoot = require(`./get-project-root`)
-const dependencies = require(path.join(appPath, `package.json`)).dependencies
-
 module.exports = (project, getPath, getDependencies) => {
+    const appPath = require(`electron`).app.getAppPath()
+    const path = require(`path`)
+    const GetProjectRoot = require(`./get-project-root`)
+    const dependencies = require(path.join(appPath, `package.json`)).dependencies
+
     if (getDependencies) { return Object.keys(dependencies) }
     if (getPath) { return path.join(GetProjectRoot(project), `package.json`) }
 

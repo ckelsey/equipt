@@ -2,7 +2,6 @@ const fs = require(`fs`)
 const electron = require(`electron`)
 const path = require(`path`)
 const InitProject = require(`./init-project`)
-const RunTests = require(`./run-tests`)
 const GetAllProjectResults = require(`./get-all-project-results`)
 const State = require(`./state`)
 
@@ -67,6 +66,21 @@ ipcMain.on(`getProjects`, event => {
 
 ipcMain.on(`runProject`, (event, data) => {
     event.returnValue = true
+
+    delete require.cache[`./run-tests`]
+    delete require.cache[`./can-write-files`]
+    delete require.cache[`./gather-test-results-coverage`]
+    delete require.cache[`./gather-test-results`]
+    delete require.cache[`./get-app-node-modules`]
+    delete require.cache[`./get-project-root`]
+    delete require.cache[`./get-results-path`]
+    delete require.cache[`./package`]
+    delete require.cache[`./results`]
+    delete require.cache[`./wd-config`]
+    delete require.cache[`./write-remote-files`]
+
+    const RunTests = require(`./run-tests`)
+
     RunTests(data)
         .catch(console.log)
 })

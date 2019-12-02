@@ -10,6 +10,11 @@ exports.config = {
     outputDir: '{{outputDir}}',
     specs: {{specs}},
     framework: 'jasmine',
+    jasmineNodeOpts:{
+        defaultTimeoutInterval: 5000,
+        grep: null,
+        invertGrep: null
+    },
     headless: false,
     bail: 0,
     waitforTimeout: 10000,
@@ -20,5 +25,6 @@ exports.config = {
     reporterOptions: { combined: true },
     before: function () {
         {{babel}}
+        {{beforeRequires}}
     }
 }

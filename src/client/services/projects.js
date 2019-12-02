@@ -131,6 +131,7 @@ Server.subscribe(`appError`, () => {
 })
 
 Server.subscribe(`projectsUpdate`, data => {
+    console.log(Object.assign({}, data))
     Projects.projects$.next(data)
 
     requestAnimationFrame(() => {

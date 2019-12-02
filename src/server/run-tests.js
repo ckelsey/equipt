@@ -1,15 +1,15 @@
-const path = require(`path`)
-const spawn = require(`child_process`).spawn
-const GetProjectRoot = require(`./get-project-root`)
-const WDConfig = require(`./wd-config`)
-const Between = require(`../utils/between`)
-const CanWriteFiles = require(`./can-write-files`)
-const WriteRemoteFiles = require(`./write-remote-files`)
-const GatherTestResults = require(`./gather-test-results`)
-const State = require(`./state`)
-
 module.exports = project => new Promise((resolve, reject) => {
     let errored = false
+    const path = require(`path`)
+    const spawn = require(`child_process`).spawn
+    const GetProjectRoot = require(`./get-project-root`)
+    const WDConfig = require(`./wd-config`)
+    const Between = require(`../utils/between`)
+    const CanWriteFiles = require(`./can-write-files`)
+    const WriteRemoteFiles = require(`./write-remote-files`)
+    const GatherTestResults = require(`./gather-test-results`)
+    const State = require(`./state`)
+
     State.window.webContents.send(`testProgress`, { progress: 0, done: false, text: `Preparing tests`, header: `Initializing` })
 
     if (!CanWriteFiles(project)) {
@@ -42,25 +42,30 @@ module.exports = project => new Promise((resolve, reject) => {
     const standardText = (string, type) => `${progressText()}${type} ${testFile(string) || ``}`
     const sendUpdate = (done, header, text) => errored ? undefined : State.window.webContents.send(`testProgress`, { done, text, progress: progress(), header: `${browser}${header}` })
 
+    const die = () => {
+        child.stdin.end()
+        child.kill()
+    }
+
     const onComplete = () => {
+        die()
+
         if (errored) { return }
+
         sendUpdate(true, `Complete`, `Gathering reports`)
-        GatherTestResults(project)
+        return GatherTestResults(project)
             .then(res => {
                 sendUpdate(true, `Complete`, `Done`)
-                resolve(
-                    State.window.webContents.send(`testResults`, res)
-                )
+                resolve(State.window.webContents.send(`testResults`, res))
             })
     }
 
     const onError = error => {
         errored = true
-        child.stdin.pause()
-        child.kill()
+        die()
         State.window.webContents.send(`testProgress`, { done: true, text: ``, progress: 0, header: `` })
-        State.window.webContents.send(`appError`, { error })
-        return reject(error)
+        State.window.webContents.send(`appError`, { error: error.toString() })
+        return reject(error.toString())
     }
 
     const args = [
@@ -68,8 +73,9 @@ module.exports = project => new Promise((resolve, reject) => {
         path.dirname(root),
         `--report-dir`,
         out,
-        `--reporter=json-summary`,
         `--reporter=json`,
+        `--cache`,
+        `false`,
     ]
 
     if (needsBabel) {
@@ -84,14 +90,8 @@ module.exports = project => new Promise((resolve, reject) => {
     const child = spawn(path.resolve(`${targetNodeModules}/.bin/nyc`), args)
 
     child.on(`exit`, onComplete)
-
-    child.on(`error`, err => {
-        return onError(err.toString())
-    })
-
-    child.stderr.on(`data`, err => {
-        return onError(err.toString())
-    })
+    child.on(`error`, onError)
+    child.stderr.on(`data`, onError)
 
     child.stdout.on(`data`, (data) => {
         console.log(`stdout: ${data}`)

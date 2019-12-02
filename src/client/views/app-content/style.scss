@@ -4,18 +4,21 @@
     width: 100%;
     height: 100%;
     display: block;
+    overflow: hidden;
 }
 
 .app-content-container {
     width: 100%;
     height: 100%;
     display: block;
+    overflow: hidden;
 }
 
 #home-container {
     display: flex;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 
 #home-sidebar {
@@ -32,6 +35,10 @@
 #home-main {
     flex-grow: 1;
     padding: 1em 2em;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
 }
 
 #chromebar {

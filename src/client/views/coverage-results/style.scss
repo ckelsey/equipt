@@ -1,6 +1,9 @@
 @import '../../styles/vars.scss';
 
 :host(coverage-results) {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
     display: block;
 }
 

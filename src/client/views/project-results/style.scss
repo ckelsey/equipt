@@ -1,14 +1,11 @@
-@import '../../styles/vars.scss';
-
-:host(test-result) {
+:host(project-results) {
     max-width: 100%;
     width: 100%;
     box-sizing: border-box;
     display: block;
 }
 
-.test-result-container {
-    position: relative;
+.project-results-container {
     max-width: 100%;
     width: 100%;
     box-sizing: border-box;

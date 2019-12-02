@@ -1,2 +1,4 @@
-const fs = require(`fs`)
-module.exports = project => fs.existsSync(project.packagePath)
+module.exports = project => {
+    const fs = require(`fs`)
+    return fs.existsSync(project.packagePath)
+}

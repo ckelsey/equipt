@@ -31,7 +31,7 @@ const properties = {
                 )
             })
 
-            coverageResults.results = val.coverage
+            coverageResults.results = val
         }
     }
 }

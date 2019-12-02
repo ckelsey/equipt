@@ -1,6 +1,5 @@
 import '../coverage-line'
 import { WCConstructor, WCDefine, CreateElement } from 'builtjs'
-import { Coverage } from '../../services/coverage'
 
 const componentName = `coverage-result`
 const componentRoot = `.${componentName}-container`
@@ -16,11 +15,10 @@ const properties = {
     coverage: {
         format: val => val,
         onChange: (val, host) => {
-            const average = Coverage.average(val)
             const toggler = host.elements.toggler
             const content = host.elements.content
 
-            toggler.innerHTML = `<span>${val.file}&nbsp;<span class="result-coverage-score-text" evaluated="${Coverage.scoreEvaluation(average)}">${average}%</span></span>`
+            toggler.innerHTML = `<span>${val.file}&nbsp;<span class="result-coverage-score-text" evaluated="${val.scoreEvaluation}">${val.score}%</span></span>`
 
             val.lines.forEach((line, lineIndex) => content.appendChild(
                 CreateElement({

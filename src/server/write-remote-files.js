@@ -1,12 +1,11 @@
-const fs = require(`fs`)
-const path = require(`path`)
-const execSync = require(`child_process`).execSync
-const GetAppNodeModules = require(`./get-app-node-modules`)
-const WDConfig = require(`./wd-config`)
-const Package = require(`./package`)
-const CreateRoot = require(`./create-root`)
-
 module.exports = (project, root) => {
+    const fs = require(`fs`)
+    const path = require(`path`)
+    const execSync = require(`child_process`).execSync
+    const GetAppNodeModules = require(`./get-app-node-modules`)
+    const WDConfig = require(`./wd-config`)
+    const Package = require(`./package`)
+    const CreateRoot = require(`./create-root`)
     CreateRoot(root)
 
     const WDConfigPath = WDConfig(project, true)

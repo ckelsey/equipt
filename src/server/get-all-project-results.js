@@ -1,9 +1,8 @@
-const fs = require(`fs`)
-const path = require(`path`)
-const GetProjectRoot = require(`./get-project-root`)
-const GetResultsPath = require(`./get-results-path`)
-
 module.exports = project => new Promise((resolve, reject) => {
+    const fs = require(`fs`)
+    const path = require(`path`)
+    const GetProjectRoot = require(`./get-project-root`)
+    const GetResultsPath = require(`./get-results-path`)
     const root = GetProjectRoot(project)
 
     GetResultsPath(root, true, false)

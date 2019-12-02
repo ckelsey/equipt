@@ -26,6 +26,10 @@ const properties = {
             let fails = 0
             let skips = 0
 
+            const errorHTML = t => t.error ? `<span class="dim-text">&nbsp;-&nbsp;${t.error}</span>` : ``
+            const nameHTML = t => `<span class="suite-content-test-result-name ${t.state}">&middot;&nbsp;${t.name}${errorHTML(t)}</span>`
+            const durationHTML = t => `<span class="suite-content-test-result-duration">${t.duration}ms</span>`
+
             Get(val, `tests`, []).forEach((t, i) => {
                 t.state === `failed` ?
                     fails = fails + 1 :
@@ -37,7 +41,7 @@ const properties = {
                     CreateElement({
                         tagName: `div`,
                         class: `suite-content-test-result ${t.state} ${i % 2 === 0 ? `odd` : `even`}`,
-                        innerHTML: `<span class="suite-content-test-result-name ${t.state}">&middot;&nbsp;${t.name}</span><span class="suite-content-test-result-duration">${t.duration}ms</span>`
+                        innerHTML: `${nameHTML(t)}${durationHTML(t)}`
                     })
                 )
             })

@@ -2,6 +2,10 @@
 
 $numWidth: 2.76em;
 
+:host(coverage-line) {
+    display: inline-block;
+}
+
 .coverage-line-container {
     display: flex;
     flex-wrap: nowrap;

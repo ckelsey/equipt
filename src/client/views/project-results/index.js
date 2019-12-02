@@ -5,6 +5,7 @@ import Projects from '../../services/projects'
 const componentName = `project-results`
 const componentRoot = `.${componentName}-container`
 const template = require(`./index.html`)
+const style = require(`./style.scss`).toString()
 const elements = { root: { selector: componentRoot } }
 
 const populate = (root, results) => {
@@ -12,15 +13,16 @@ const populate = (root, results) => {
 
     if (!results) { return }
 
-    results.forEach((result, index) => {
-        root.appendChild(
+    results
+        .slice()
+        .sort((a, b) => a.time < b.time ? 1 : a.time > b.time ? -1 : 0)
+        .forEach((testdata, index) => root.appendChild(
             CreateElement({
+                testdata,
                 tagName: `test-result`,
-                testdata: result,
                 class: index % 2 == 0 ? `even` : `odd`
             })
-        )
-    })
+        ))
 }
 
 const properties = {
@@ -34,6 +36,7 @@ export const ProjectResults = WCConstructor({
     componentName,
     componentRoot,
     template,
+    style,
     elements,
     properties,
     observedAttributes: Object.keys(properties),

@@ -1,19 +1,24 @@
+- hmm... coverage needs the app to restart?
+    - seems to be fine in the code visual (i.e. 2x line 2)
+    - I think it's actually coming from client side as the reports actually look to be correct
+    - grumble, don't think so, but maybe it's getting it wrong on server, buuuut lines array IS correct
+    - ok, coverage-summary is bullshit, go off of .nyc_potput
 
+- instead of progress bar, do progress bar with stndin messages, minimize parsing
 
 =================================================
 LATER ENHANCMENTS
 =================================================
 
-- get rid of flicker from when settings is open and change project
-
-- view logs(for unuseful errors)
-
-- project init
-    - in remote package, add install(npm i actually installs into equipt directory) and start scripts so you can run without the app
-    - create jasmine config?
-
-- run project
+- UI
+    - coverage for file to show counts and highlight on hover
+    - get rid of flicker from when settings is open and change project
+    - view logs(for unuseful errors)
     - cancel tests runner (child.pause();child.kill())
+    - delete test result
+
+- export project
+    - in remote package, add install(npm i actually installs into equipt directory) and start scripts so you can run without the app
 
 - visual recorder test maker?
     - start server
@@ -22,4 +27,4 @@ LATER ENHANCMENTS
 
 - Would be so cool if it could also help write docs
 
-- delete test result
+- record test frame x frame to watch stack(via nyc instrumenting)

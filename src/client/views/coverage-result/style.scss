@@ -1,6 +1,25 @@
 @import '../../styles/vars.scss';
 
+:host(coverage-result) {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    display: block;
+}
+
+.coverage-result-container {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    display: block;
+}
+
 .coverage-result-content {
     padding: 1em 0.5em;
+    max-width: 100%;
+    width: 100%;
     box-sizing: border-box;
+    display: flex;
+    overflow: auto;
+    flex-direction: column;
 }

@@ -24,20 +24,9 @@ const setPassFailSkip = (val, el) => {
     el.innerHTML = `<span><span class="skipped">${skipped} skipped</span>&nbsp;&middot;&nbsp;<span class="failed">${failed} failed</span>&nbsp;&middot;&nbsp;<span class="passed">${passed} passed</span></span>`
 }
 
-const actualPercent = pct => !pct || pct === `Unknown` ? 0 : pct
-
 const setCoverageScore = (val, el) => {
-    const totals = Get(val, `coverage.total`, {})
-    const sum = Object.keys(totals)
-        .reduce((result, key) => {
-            result = result + actualPercent(totals[key].pct)
-            return result
-        }, 0)
-
-    const score = Math.round(sum / 4)
-    const evaluated = score > 90 ? `good` : score > 75 ? `ok` : `bad`
-    el.setAttribute(`evaluated`, evaluated)
-    el.innerHTML = `<span>${score}%</span>`
+    el.setAttribute(`evaluated`, val.coverageSummary.scoreEvaluation)
+    el.innerHTML = `<span>${val.coverageSummary.score}%</span>`
 }
 
 const elements = {

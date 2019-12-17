@@ -1,22 +1,26 @@
-module.exports = (project, root) => {
-    const fs = require(`fs`)
-    const path = require(`path`)
-    const execSync = require(`child_process`).execSync
-    const GetAppNodeModules = require(`./get-app-node-modules`)
-    const WDConfig = require(`./wd-config`)
-    const Package = require(`./package`)
-    const CreateRoot = require(`./create-root`)
-    CreateRoot(root)
+const fs = require(`fs`)
+const execSync = require(`child_process`).execSync
+const GetPaths = require(`./get-paths`)
+const WriteWebdriverConfig = require(`./write-webdriver-config`)
+const WriteBabelConfig = require(`./write-babel-config`)
+const WritePackageJson = require(`./write-package-json`)
+const meddler = require(`./meddler`).instance
 
-    const WDConfigPath = WDConfig(project, true)
-    if (fs.existsSync(WDConfigPath)) { fs.unlinkSync(WDConfigPath) }
-    fs.writeFileSync(WDConfigPath, WDConfig(project))
+module.exports = (project, asExport) => {
+    const paths = GetPaths(project)
 
-    const packagePath = Package(project, true)
-    if (fs.existsSync(packagePath)) { fs.unlinkSync(packagePath) }
-    fs.writeFileSync(packagePath, JSON.stringify(Package(project)))
+    if (!fs.existsSync(paths.projectRoot)) { fs.mkdirSync(paths.projectRoot) }
+    if (!fs.existsSync(paths.output)) { fs.mkdirSync(paths.output) }
+    if (!fs.existsSync(paths.outputResults)) { fs.mkdirSync(paths.outputResults) }
+    if (!fs.existsSync(paths.outputTmp)) { fs.mkdirSync(paths.outputTmp) }
 
-    const remoteNodeMods = path.join(root, `node_modules`)
-    if (fs.existsSync(remoteNodeMods)) { execSync(`rm -R ${remoteNodeMods}`) }
-    fs.symlinkSync(GetAppNodeModules(), remoteNodeMods)
+    WriteBabelConfig(project, asExport)
+    WritePackageJson(project)
+    WriteWebdriverConfig(project, asExport)
+
+    if (fs.existsSync(paths.outputNodeModules)) { execSync(`rm -R ${paths.outputNodeModules}`) }
+
+    fs.symlinkSync(paths.appNodeModules, paths.outputNodeModules)
+
+    meddler.init()
 }

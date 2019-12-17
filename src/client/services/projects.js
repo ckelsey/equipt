@@ -1,9 +1,6 @@
 import { Observer, ID, Pipe, FromJSON, IfInvalid, Get } from 'builtjs'
 import Server from "./server"
 
-let progressBar
-const setProgressBar = () => !progressBar ? progressBar = document.getElementById(`app-progress`) : undefined
-
 const Projects = {
     projects$: Observer({}),
     project$: Observer({}),
@@ -18,13 +15,16 @@ const Projects = {
     open(key) {
         Projects.loading = true
         Projects.editing = false
-        Projects.getProjects()
+        Server.send(`openProject`, key)
 
+        // if not current project
         if (Projects.projects[key] && Projects.project.id !== key) {
             Projects.project$.next({ id: Projects.projects[key].id })
         }
 
-        Projects.lastOpenedProject = key
+        if (Projects.lastOpenedProject !== key) {
+            Projects.lastOpenedProject = key
+        }
     },
 
     newProject() {
@@ -47,8 +47,6 @@ const Projects = {
     },
 
     run(project) {
-        setProgressBar()
-        progressBar.animation = `linear`
         Server.sendAsync(`runProject`, project)
     },
 
@@ -109,45 +107,32 @@ Object.defineProperties(Projects, {
         set(id) {
             const projectHistory = Projects.storage.lastOpenedProject.clearInvalids()
             projectHistory.push(id)
-            localStorage.setItem(Projects.storage.lastOpenedProject.storageKey, JSON.stringify(projectHistory))
+            localStorage.setItem(Projects.storage.lastOpenedProject.storageKey, JSON.stringify(projectHistory.slice(-10)))
         },
     }
 })
 
-Server.subscribe(`testResults`, () => Projects.open(Projects.project.id))
-
-Server.subscribe(`testProgress`, data => {
-    setProgressBar()
-    progressBar.visible = !data.done
-    progressBar.text = `<div>${data.text || `&nbsp;`}</div>`
-    progressBar.header = `<div>${data.header || `&nbsp;`}</div>`
-    progressBar.value = data.progress
-})
-
-Server.subscribe(`appError`, () => {
-    setProgressBar()
-    progressBar.visible = false
-    Projects.loading = false
-})
-
-Server.subscribe(`projectsUpdate`, data => {
-    console.log(Object.assign({}, data))
+const projectsUpdate = data => {
     Projects.projects$.next(data)
 
-    requestAnimationFrame(() => {
-        const currentProjectId = Get(Projects, `project.id`)
-        const lastOpenedProject = Projects.lastOpenedProject
+    const currentProjectId = Get(Projects, `project.id`)
+    const lastOpenedProject = Projects.lastOpenedProject
 
-        if (currentProjectId) {
-            if (Projects.projects[currentProjectId]) {
-                Projects.project$.next(Projects.projects[currentProjectId])
-            }
-        } else if (lastOpenedProject) {
-            Projects.project$.next(Projects.projects[lastOpenedProject])
-        }
-    })
+    if (currentProjectId || lastOpenedProject) {
+        Server.send(`openProject`, currentProjectId || lastOpenedProject)
+    } else {
+        Projects.loading = false
+    }
+}
 
+const projectUpdate = data => {
+    Projects.project$.next(data)
     Projects.loading = false
-})
+}
+
+Server.subscribe(`testResults`, () => Projects.open(Projects.project.id))
+Server.subscribe(`appError`, () => Projects.loading = false)
+Server.subscribe(`projectsUpdate`, projectsUpdate)
+Server.subscribe(`projectUpdate`, projectUpdate)
 
 export default Projects

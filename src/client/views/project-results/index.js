@@ -10,7 +10,6 @@ const elements = { root: { selector: componentRoot } }
 
 const populate = (root, results) => {
     root.innerHTML = ``
-
     if (!results) { return }
 
     results

@@ -4,6 +4,7 @@ import '../project-header'
 import '../project-results'
 import '../project-settings'
 import '../no-project'
+import '../test-progress'
 import Projects from '../../services/projects'
 import { Messages } from '../../services/messages'
 

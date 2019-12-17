@@ -16,11 +16,11 @@ module.exports = {
             { branches: 0, statements: 0, functions: 0, }
         )
 
-        data.branches = { score: data.branches / len, scoreEvaluation: scoreEvaluation(data.branches / len) }
+        data.branches = { score: Math.round(data.branches / len), scoreEvaluation: scoreEvaluation(data.branches / len) }
 
-        data.statements = { score: data.statements / len, scoreEvaluation: scoreEvaluation(data.statements / len) }
+        data.statements = { score: Math.round(data.statements / len), scoreEvaluation: scoreEvaluation(data.statements / len) }
 
-        data.functions = { score: data.functions / len, scoreEvaluation: scoreEvaluation(data.functions / len) }
+        data.functions = { score: Math.round(data.functions / len), scoreEvaluation: scoreEvaluation(data.functions / len) }
 
         return data
     },

@@ -49,6 +49,22 @@ $dimDarker: transparentize($offset, 0.88);
     @include skipped;
 }
 
+.danger-background {
+    background-color: $danger;
+}
+
+.danger-text {
+    @include failed;
+}
+
+.primary-text {
+    color: $primary;
+}
+
+.warning-text {
+    color: $warning;
+}
+
 .result-coverage-score {
     min-width: 2.5em;
     width: 2.5em;

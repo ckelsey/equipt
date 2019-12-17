@@ -9,7 +9,8 @@ const style = require(`./style.scss`).toString()
 const elements = {
     root: { selector: componentRoot },
     testContent: { selector: `.${componentName}-test-content` },
-    coverageResults: { selector: `.${componentName}-coverage-results` }
+    coverageResults: { selector: `.${componentName}-coverage-results` },
+    logResults: { selector: `.${componentName}-logs-content` },
 }
 const properties = {
     testdata: {
@@ -17,6 +18,7 @@ const properties = {
         onChange: (val, host) => {
             const testContent = host.elements.testContent
             const coverageResults = host.elements.coverageResults
+            const logResults = host.elements.logResults
             coverageResults.innerHTML = testContent.innerHTML = ``
 
             if (!val || !val.tests.length) { return }
@@ -32,6 +34,8 @@ const properties = {
             })
 
             coverageResults.results = val
+
+            logResults.innerHTML = val.logs
         }
     }
 }

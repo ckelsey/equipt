@@ -1,14 +1,9 @@
-module.exports = root => {
-    const fs = require(`fs`)
-    const path = require(`path`)
-    const Get = require(`../utils/get`)
-    const CoverageUtils = require(`./coverage-utils`)
+const fs = require(`fs`)
+const Get = require(`../utils/get`)
 
-    const dirname = path.dirname(root)
-    const output = path.join(root, `output`)
-    const shortenedFilePath = p => p.split(dirname)[1]
-
-    const coverageObject = require(path.join(output, `coverage-final.json`))
+module.exports = paths => {
+    const shortenedFilePath = p => p.split(paths.projectRoot)[1]
+    const coverageObject = fs.existsSync(paths.coveragePath) ? JSON.parse(fs.readFileSync(paths.coveragePath).toString()) : {}
     const codePaths = Object.keys(coverageObject)
     const codePathsCount = codePaths.length
 
@@ -37,7 +32,22 @@ module.exports = root => {
             )
             .filter(filter)[0]
 
+    const lineIsComment = content => content.match(/(^|\s)\/\*/) ?
+        content.match(/(^|\s)\/\*/).index === 0 :
+        content.match(/(^|\s)\/\//) ?
+            content.match(/(^|\s)\/\//).index === 0 :
+            false
+
     const mapLine = codePath => (content, lineIndex) => {
+        if (lineIsComment(content)) {
+            return {
+                content,
+                covered: ``,
+                number: lineIndex + 1,
+                is: [`comment`]
+            }
+        }
+
         const lineNumber = lineIndex + 1
         const isRelevent = IsRelevent(lineNumber)
         const getLineCoverage = GetLineCoverage(codePath, isRelevent)
@@ -54,32 +64,52 @@ module.exports = root => {
         }
     }
 
+    const getCoverage = (data, key) => {
+        {
+            Object.keys(data.s).length,
+            covered
+        }
+    }
+
     const parseFile = codePath => new Promise((resolve, reject) => {
         fs.readFile(codePath, (err, codeFileContent) => {
             if (err) { return reject(err) }
 
+            const data = coverageObject[codePath]
             const lineMapper = mapLine(codePath)
-            const getTypeCoverage = CoverageUtils.getTypeCoverage(coverageObject[codePath])
+            // const getTypeCoverage = CoverageUtils.getTypeCoverage(coverageObject[codePath])
 
-            const statements = getTypeCoverage(`s`)
-            const functions = getTypeCoverage(`f`)
-            const branches = getTypeCoverage(`b`)
-            const score = Math.round((statements.score + branches.score + functions.score) / 3)
+            // const statements = getTypeCoverage(`s`)
+            // const functions = getTypeCoverage(`f`)
+            // const branches = getTypeCoverage(`b`)
+            // const score = Math.round((statements.score + branches.score + functions.score) / 3)
+
+            // { count: 0, covered: 0, score: 0 } scoreEvaluation
+
+            const lines = codeFileContent
+                .toString()
+                .split(`\n`)
+                .map(lineMapper)
+
+            const statements = getCoverage(data, `s`)
+
+
 
             return resolve({
                 file: shortenedFilePath(codePath),
-                statements,
-                functions,
-                branches,
-                score,
-                scoreEvaluation: CoverageUtils.scoreEvaluation(score),
-                lines: codeFileContent
-                    .toString()
-                    .split(`\n`)
-                    .map(lineMapper)
+                lines,
+                // statements,
+                // functions,
+                // branches,
+                // score,
+                // scoreEvaluation: CoverageUtils.scoreEvaluation(score),
+                // lines: codeFileContent
+                //     .toString()
+                //     .split(`\n`)
+                //     .map(lineMapper)
             })
         })
     })
 
-    return Promise.all(codePaths.map(parseFile))
+    return Promise.all(codePaths.filter(f => f.indexOf(`webdriver.config.js`) === -1).map(parseFile))
 }

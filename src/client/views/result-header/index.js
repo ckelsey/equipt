@@ -1,4 +1,6 @@
-import { WCConstructor, WCDefine, Get, DateToObject } from 'builtjs'
+import { WCConstructor, WCDefine, Get, DateToObject, ObserveEvent, iconDelete } from 'builtjs'
+import Server from '../../services/server'
+import Projects from '../../services/projects'
 
 const componentName = `result-header`
 const componentRoot = `.${componentName}-container`
@@ -33,7 +35,22 @@ const elements = {
     root: { selector: componentRoot },
     resultDate: { selector: `.result-date` },
     passesFails: { selector: `.result-passes-fails` },
-    coverageScore: { selector: `.result-coverage-score` }
+    coverageScore: { selector: `.result-coverage-score` },
+    delete: {
+        selector: `.result-delete`,
+        onChange(el, host) {
+            el.eventSubscriptions = {
+                click: ObserveEvent(el, `click`).subscribe(() => {
+                    Server.send(`deleteResult`, { result: host.testdata, project: Projects.project })
+                    host.parentElement.parentElement.removeChild(host.parentElement)
+                })
+            }
+        }
+    },
+    deleteIcon: {
+        selector: `.result-delete-icon`,
+        onChange(el) { el.svg = iconDelete }
+    }
 }
 const properties = {
     testdata: {

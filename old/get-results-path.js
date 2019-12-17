@@ -1,6 +1,7 @@
+const path = require(`path`)
+const fs = require(`fs`)
+
 module.exports = (root, read, sync) => {
-    const path = require(`path`)
-    const fs = require(`fs`)
     const resultsPath = path.join(root, `results`)
 
     if (!fs.existsSync(root)) {

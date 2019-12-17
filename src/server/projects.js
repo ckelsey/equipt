@@ -1,8 +1,8 @@
 const fs = require(`fs`)
 const electron = require(`electron`)
 const path = require(`path`)
-const InitProject = require(`./init-project`)
 const GetAllProjectResults = require(`./get-all-project-results`)
+const WriteRemoteFiles = require(`./write-remote-files`)
 const State = require(`./state`)
 
 const app = electron.app
@@ -17,29 +17,31 @@ const writeProjects = data => {
     return projectString
 }
 
+function send(key, data) {
+    return State.window.webContents.send(key, data)
+}
+
 function getProjectsData() {
+    return send(`projectsUpdate`, getProjectsObject())
+}
+
+function openProject(id) {
     const projects = getProjectsObject()
-    const projectKeys = Object.keys(projects)
-    const projectsResults = {}
+    const project = projects[id]
 
-    projectKeys
-        .forEach(id => GetAllProjectResults(projects[id])
-            .then(res => {
-                projectsResults[id] = res
+    if (!project) { return send(`projectUpdate`, {}) }
 
-                const resultKeys = Object.keys(projectsResults)
-                if (projectKeys.length === resultKeys.length) {
-                    resultKeys.forEach(idKey => projects[idKey].results = projectsResults[idKey])
-                    State.window.webContents.send(`projectsUpdate`, projects)
-                }
-            })
-        )
+    GetAllProjectResults(project)
+        .then(results => {
+            send(`projectUpdate`, Object.assign({}, project, { results }))
+        })
 }
 
 function updateProject(data) {
     const projects = getProjectsObject()
     projects[data.id] = data
-    InitProject(data) ? writeProjects(projects) : { error: `Error saving project` }
+    WriteRemoteFiles(data, true)
+    writeProjects(projects)
     getProjectsData()
 }
 
@@ -59,28 +61,24 @@ ipcMain.on(`updateProject`, (event, data) => {
     event.returnValue = true
     updateProject(data)
 })
+
 ipcMain.on(`getProjects`, event => {
     event.returnValue = true
     getProjectsData()
 })
 
+ipcMain.on(`openProject`, (event, id) => {
+    event.returnValue = true
+    openProject(id)
+})
+
 ipcMain.on(`runProject`, (event, data) => {
     event.returnValue = true
+    require(`./run-tests`)(data)
+})
 
-    delete require.cache[`./run-tests`]
-    delete require.cache[`./can-write-files`]
-    delete require.cache[`./gather-test-results-coverage`]
-    delete require.cache[`./gather-test-results`]
-    delete require.cache[`./get-app-node-modules`]
-    delete require.cache[`./get-project-root`]
-    delete require.cache[`./get-results-path`]
-    delete require.cache[`./package`]
-    delete require.cache[`./results`]
-    delete require.cache[`./wd-config`]
-    delete require.cache[`./write-remote-files`]
-
-    const RunTests = require(`./run-tests`)
-
-    RunTests(data)
-        .catch(console.log)
+ipcMain.on(`deleteResult`, (event, data) => {
+    event.returnValue = true
+    require(`./delete-result`)(data.result, data.project)
+    getProjectsData()
 })

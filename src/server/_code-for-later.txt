@@ -1,0 +1,120 @@
+    const beforeTest = function (test, state) { meddler.trigger('beforeTest', { test, state, type: 'beforeTest' }); }
+    const beforeTestReplace = `beforeTest: ${beforeTest.toString()},`
+
+    const afterTest = function (test, state) { meddler.trigger('afterTest', { test, state, type: 'afterTest' }); }
+    const afterTestReplace = `afterTest: ${afterTest.toString()},`
+
+    const onPrepare = function (config, capabilities) { meddler.trigger('onPrepare', { config, capabilities, type: 'onPrepare' }); }
+    const onPrepareReplace = `onPrepare: ${onPrepare.toString()},`
+
+    const beforeSuite = function (fileMeta) { meddler.trigger('beforeSuite', { fileMeta, type: 'beforeSuite' }); }
+    const beforeSuiteReplace = `beforeSuite: ${beforeSuite.toString()},`
+
+
+
+
+
+
+
+
+        const WDIOReporter = require(`@wdio/reporter`).default;
+
+        class EquiptReporter extends WDIOReporter {
+            constructor(options) {
+                super(options);
+            }
+
+            onRunnerStart(arg) {
+                this.write(`onRunnerStart: \n${JSON.stringify(arg, null, '  ')}\n\n`);
+            }
+
+            onTestStart(arg) {
+                this.write(`onTestStart: \n${JSON.stringify(arg, null, '  ')}\n\n`);
+            }
+
+            onBeforeCommand(arg) {
+                this.write(`onBeforeCommand: \n${JSON.stringify(arg, null, '  ')}\n\n`);
+            }
+
+            onSuiteStart(arg) {
+                this.write(`onSuiteStart: \n${JSON.stringify(arg, null, '  ')}\n\n`);
+            }
+
+            onHookStart(arg) {
+                this.write(`onHookStart: \n${JSON.stringify(arg, null, '  ')}\n\n`);
+            }
+        };
+
+        const Service = {
+            beforeSession: '',
+            beforeSuite: '',
+            beforeTest: '',
+            afterTest: '',
+            onPrepare: '',
+        };
+
+         services: [
+                'chromedriver',
+                [Service]
+            ],
+
+
+
+
+
+
+
+
+// 'goog:chromeOptions': {
+//     args: ['--headless', '--disable-gpu']
+// }
+
+// --enable-precise-memory-info
+
+
+
+// const WDIOReporter = require(`@wdio/reporter`).default;
+
+// class EquiptReporter extends WDIOReporter {
+//     constructor(options) {
+//         super(options);
+//         this.write(`initialised custom reporter with the following reporter options:`, options);
+//     }
+
+//     onRunnerStart(a) {
+//         this.write(`onRunnerStart`, a);
+//     }
+// };
+
+// reporters: ['json', EquiptReporter],
+
+// onBeforeCommand() { this.write(`onBeforeCommand`) }
+            // onAfterCommand() { this.write(`onAfterCommand`) }
+            // onScreenshot() { this.write(`onScreenshot`) }
+            // onSuiteStart() { this.write(`onSuiteStart`) }
+            // onHookStart() { this.write(`onHookStart`) }
+            // onHookEnd() { this.write(`onHookEnd`) }
+            // onTestStart() { this.write(`onTestStart`) }
+            // onTestPass() { this.write(`onTestPass`) }
+            // onTestFail() { this.write(`onTestFail`) }
+            // onTestSkip() { this.write(`onTestSkip`) }
+            // onTestEnd() { this.write(`onTestEnd`) }
+            // onSuiteEnd() { this.write(`onSuiteEnd`) }
+            // onRunnerEnd() { this.write(`onRunnerEnd`) }
+
+
+
+
+
+
+
+
+
+
+
+current.meddlerBeforeTestSub = meddler.subscribe(`beforeTest`, data => {
+        const file = `meddler.json`
+        const logData = JSON.parse(fs.existsSync(file) ? fs.readFileSync(file) : `[]`)
+        logData.push(data)
+        fs.writeFileSync(file, JSON.stringify(logData))
+    })

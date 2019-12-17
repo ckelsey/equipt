@@ -23,6 +23,8 @@ const populate = (results, elements) => {
 
     overviewItems.forEach(doOverviewItem)
 
+    if (!Array.isArray(results.coverage)) { return }
+
     results.coverage
         .sort((a, b) => {
             const aName = a.file.toLowerCase()

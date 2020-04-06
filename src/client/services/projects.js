@@ -1,4 +1,4 @@
-import { Observer, ID, Pipe, FromJSON, IfInvalid, Get } from 'builtjs'
+import { Observer, ID, Pipe, FromJSON, IfInvalid, Get, Equals } from 'builtjs'
 import Server from "./server"
 
 const Projects = {
@@ -81,8 +81,20 @@ const Projects = {
 }
 
 Object.defineProperties(Projects, {
-    projects: { get() { return Projects.projects$.value || {} } },
-    project: { get() { return Projects.project$.value || {} } },
+    projects: {
+        get() { return Projects.projects$.value || {} },
+        set(value) {
+            if (Equals(value, Projects.projects$.value)) { return }
+            Projects.projects$.next(value)
+        }
+    },
+    project: {
+        get() { return Projects.project$.value || {} },
+        set(value) {
+            if (Equals(value, Projects.project$.value)) { return }
+            Projects.project$.next(value)
+        }
+    },
     isNew: {
         get() {
             return Projects.project$.value.id && Object.keys(Projects.projects$.value).indexOf(Projects.project$.value.id) === -1
@@ -113,7 +125,7 @@ Object.defineProperties(Projects, {
 })
 
 const projectsUpdate = data => {
-    Projects.projects$.next(data)
+    Projects.projects = data
 
     const currentProjectId = Get(Projects, `project.id`)
     const lastOpenedProject = Projects.lastOpenedProject
@@ -126,9 +138,11 @@ const projectsUpdate = data => {
 }
 
 const projectUpdate = data => {
-    Projects.project$.next(data)
+    Projects.project = data
     Projects.loading = false
 }
+
+window.Projects = Projects
 
 Server.subscribe(`testResults`, () => Projects.open(Projects.project.id))
 Server.subscribe(`appError`, () => Projects.loading = false)

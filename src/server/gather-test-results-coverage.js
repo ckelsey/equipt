@@ -7,9 +7,7 @@ module.exports = paths => {
     const codePaths = Object.keys(coverageObject)
     const codePathsCount = codePaths.length
 
-    if (codePathsCount === 0) {
-        return Promise.resolve({})
-    }
+    if (codePathsCount === 0) { return Promise.resolve({}) }
 
     const filter = s => s !== false
 
@@ -64,12 +62,11 @@ module.exports = paths => {
         }
     }
 
-    const getCoverage = (data, key) => {
-        {
-            Object.keys(data.s).length,
-            covered
-        }
-    }
+    // const getCoverage = (data, key) => {
+    //     // return {
+    //     //     Object.keys(data.s).length,
+    //     // }
+    // }
 
     const parseFile = codePath => new Promise((resolve, reject) => {
         fs.readFile(codePath, (err, codeFileContent) => {
@@ -77,6 +74,7 @@ module.exports = paths => {
 
             const data = coverageObject[codePath]
             const lineMapper = mapLine(codePath)
+            console.log(data)
             // const getTypeCoverage = CoverageUtils.getTypeCoverage(coverageObject[codePath])
 
             // const statements = getTypeCoverage(`s`)
@@ -91,7 +89,7 @@ module.exports = paths => {
                 .split(`\n`)
                 .map(lineMapper)
 
-            const statements = getCoverage(data, `s`)
+            // const statements = getCoverage(data, `s`)
 
 
 

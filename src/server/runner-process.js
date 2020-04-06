@@ -38,6 +38,8 @@ const run = (paths) => {
         paths.webdriverConfig
     ]
 
+    console.log(paths.nyc, args)
+
     current.child = spawn(paths.nyc, args)
     current.child.on(`exit`, current.complete)
     current.child.on(`error`, current.error)

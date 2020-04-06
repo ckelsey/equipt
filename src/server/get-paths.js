@@ -32,9 +32,6 @@ module.exports = project => {
         nycTmp: path.join(projectRoot, `.nyc_output`),
         coveragePath: path.join(outputTmp, `coverage-final.json`),
 
-        meddler: path.join(appPath, `src`, `server`, `meddler`),
-        meddlerJson: path.resolve(`meddler.json`),
-
         appPackage: path.join(appPath, `package.json`),
         runnerProcess: path.join(__dirname, `runner-process.js`)
     }

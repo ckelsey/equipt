@@ -27,12 +27,13 @@ module.exports = project => {
     const flattenTests = res => Array.isArray(res) ? Array.isArray(res[0]) ? res[0][0] : res[0] : res
 
     return Promise.all([
-        // GetCoverage(paths),
+        GetCoverage(paths),
         ReadTestResultFiles(paths)
     ])
         .then(res => {
             const time = new Date().getTime()
-            // const coverage = res.shift()
+            const _coverage = res.shift()
+            console.log(_coverage)
             const coverage = {}
             const flattened = flattenTests(res)
             const tests = flattened.tests

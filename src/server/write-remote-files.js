@@ -4,7 +4,6 @@ const GetPaths = require(`./get-paths`)
 const WriteWebdriverConfig = require(`./write-webdriver-config`)
 const WriteBabelConfig = require(`./write-babel-config`)
 const WritePackageJson = require(`./write-package-json`)
-const meddler = require(`./meddler`).instance
 
 module.exports = (project, asExport) => {
     const paths = GetPaths(project)
@@ -21,6 +20,4 @@ module.exports = (project, asExport) => {
     if (fs.existsSync(paths.outputNodeModules)) { execSync(`rm -R ${paths.outputNodeModules}`) }
 
     fs.symlinkSync(paths.appNodeModules, paths.outputNodeModules)
-
-    meddler.init()
 }

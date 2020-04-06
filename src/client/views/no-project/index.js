@@ -26,7 +26,9 @@ const elements = {
         selector: `.${componentName}-transition`,
         onChange(el, host) {
             el.eventSubscriptions = {
-                project: Projects.project$.subscribe(project => setTransition(el, project && project.id ? 0 : 1, host))
+                project: Projects.project$.subscribe(project => {
+                    setTransition(el, project && project.id ? 0 : 1, host)
+                })
             }
         }
     }
